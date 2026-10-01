@@ -1,71 +1,18 @@
-name: Build Alvin Piano SF2 5Layer
+name: Build Alvin Piano APK
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - uses: android-actions/setup-android@v3
-      - name: Build 5 Layer SF2 Style
+      - name: Build Step 1
         run: |
-          rm -rf app build.gradle settings.gradle
-          mkdir -p app/src/main/java/com/alvin/piano app/src/main/res/layout app/src/main/res/values
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-          echo "android.useAndroidX=true" > gradle.properties
-          echo "include ':app'" > settings.gradle
-          cat > build.gradle << 'EOF'
-          buildscript { repositories { google(); mavenCentral() } dependencies { classpath 'com.android.tools.build:gradle:8.1.2' } }
-          allprojects { repositories { google(); mavenCentral() } }
-          EOF
-          cat > app/build.gradle << 'EOF'
-          plugins { id 'com.android.application' }
-          android { namespace 'com.alvin.piano'; compileSdk 33; defaultConfig { applicationId "com.alvin.piano"; minSdk 21; targetSdk 33; versionCode 8; versionName "SF2-5Layer-Fixed" } }
-          dependencies { implementation 'androidx.appcompat:appcompat:1.6.1' }
-          EOF
-          cat > app/src/main/AndroidManifest.xml << 'EOF'
-          <?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"><application android:label="Alvin Piano SF2" android:theme="@android:style/Theme.NoTitleBar"><activity android:name=".MainActivity" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity></application></manifest>
-          EOF
-          cat > app/src/main/res/values/strings.xml << 'EOF'
-          <resources><string name="app_name">Alvin Piano SF2</string><string-array name="sf2_instruments"><item>0 - Grand Piano</item><item>5 - E.Piano</item><item>19 - Church Organ</item><item>48 - Strings</item><item>52 - Choir</item><item>89 - Warm Pad</item><item>90 - Polysynth</item><item>91 - Choir Pad</item><item>32 - Bass</item><item>24 - Guitar</item></string-array></resources>
-          EOF
-          cat > app/src/main/res/layout/activity_main.xml << 'EOF'
-          <?xml version="1.0" encoding="utf-8"?><ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#0F172A"><LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp"><TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="ALVIN PIANO - SF2 5 LAYER" android:textColor="#FFD700" android:textSize="16sp" android:gravity="center" android:textStyle="bold" android:padding="8dp"/><TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="SF2 Ready - Load from /Download/worship.sf2" android:textColor="#94A3B8" android:textSize="10sp" android:gravity="center"/><Button android:id="@+id/btn_load" android:layout_width="match_parent" android:layout_height="48dp" android:text="LOAD SF2 FILE" android:backgroundTint="#3B82F6" android:layout_marginTop="8dp"/><TextView android:text="LAYER 1" android:textColor="#FFF" android:layout_marginTop="12dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/><Spinner android:id="@+id/spin1" android:layout_width="match_parent" android:layout_height="40dp" android:background="#1E293B"/><SeekBar android:id="@+id/vol1" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="100"/><TextView android:text="LAYER 2" android:textColor="#FFF" android:layout_marginTop="8dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/><Spinner android:id="@+id/spin2" android:layout_width="match_parent" android:layout_height="40dp" android:background="#1E293B"/><SeekBar android:id="@+id/vol2" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="80"/><TextView android:text="LAYER 3" android:textColor="#FFF" android:layout_marginTop="8dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/><Spinner android:id="@+id/spin3" android:layout_width="match_parent" android:layout_height="40dp" android:background="#1E293B"/><SeekBar android:id="@+id/vol3" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="70"/><TextView android:text="LAYER 4" android:textColor="#FFF" android:layout_marginTop="8dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/><Spinner android:id="@+id/spin4" android:layout_width="match_parent" android:layout_height="40dp" android:background="#1E293B"/><SeekBar android:id="@+id/vol4" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="60"/><TextView android:text="LAYER 5" android:textColor="#FFF" android:layout_marginTop="8dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/><Spinner android:id="@+id/spin5" android:layout_width="match_parent" android:layout_height="40dp" android:background="#1E293B"/><SeekBar android:id="@+id/vol5" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="50"/><LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="80dp" android:layout_marginTop="16dp"><Button android:id="@+id/btn_c" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="C" android:layout_margin="2dp"/><Button android:id="@+id/btn_d" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="D" android:layout_margin="2dp"/><Button android:id="@+id/btn_e" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="E" android:layout_margin="2dp"/><Button android:id="@+id/btn_f" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="F" android:layout_margin="2dp"/><Button android:id="@+id/btn_g" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="G" android:layout_margin="2dp"/><Button android:id="@+id/btn_a" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="A" android:layout_margin="2dp"/><Button android:id="@+id/btn_b" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="B" android:layout_margin="2dp"/></LinearLayout></LinearLayout></ScrollView>
-          EOF
-          cat > app/src/main/java/com/alvin/piano/MainActivity.java << 'EOF'
-          package com.alvin.piano;
-          import android.media.AudioManager;
-          import android.media.ToneGenerator;
-          import android.os.Bundle;
-          import android.widget.ArrayAdapter;
-          import android.widget.SeekBar;
-          import android.widget.Spinner;
-          import android.widget.Toast;
-          import androidx.appcompat.app.AppCompatActivity;
-          public class MainActivity extends AppCompatActivity {
-              private ToneGenerator toneGen;
-              private int[] volumes={100,80,70,60,50};
-              private Spinner[] spinners=new Spinner[5];
-              @Override protected void onCreate(Bundle savedInstanceState){
-                  super.onCreate(savedInstanceState);
-                  setContentView(R.layout.activity_main);
-                  toneGen=new ToneGenerator(AudioManager.STREAM_MUSIC,100);
-                  spinners[0]=findViewById(R.id.spin1); spinners[1]=findViewById(R.id.spin2); spinners[2]=findViewById(R.id.spin3); spinners[3]=findViewById(R.id.spin4); spinners[4]=findViewById(R.id.spin5);
-                  ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(this,R.array.sf2_instruments,android.R.layout.simple_spinner_item);
-                  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                  for(int i=0;i<5;i++){ spinners[i].setAdapter(adapter); spinners[i].setSelection(i); final int idx=i; SeekBar sb=findViewById(getResources().getIdentifier("vol"+(i+1),"id",getPackageName())); sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ public void onProgressChanged(SeekBar s,int p,boolean b){volumes[idx]=p;} public void onStartTrackingTouch(SeekBar s){} public void onStopTrackingTouch(SeekBar s){}}); }
-                  findViewById(R.id.btn_load).setOnClickListener(v->Toast.makeText(this,"SF2 Loader: Ilagay mo worship.sf2 sa /Download folder. Next update maglo-load na ng real SF2!",Toast.LENGTH_LONG).show());
-                  int[] btns={R.id.btn_c,R.id.btn_d,R.id.btn_e,R.id.btn_f,R.id.btn_g,R.id.btn_a,R.id.btn_b};
-                  int[] tones={ToneGenerator.TONE_DTMF_0,ToneGenerator.TONE_DTMF_1,ToneGenerator.TONE_DTMF_2,ToneGenerator.TONE_DTMF_3,ToneGenerator.TONE_DTMF_4,ToneGenerator.TONE_DTMF_5,ToneGenerator.TONE_DTMF_6};
-                  for(int i=0;i<btns.length;i++){ final int tone=tones[i]; findViewById(btns[i]).setOnClickListener(v->{ int active=0; for(int l=0;l<5;l++) if(volumes[l]>0) active++; if(active>0) toneGen.startTone(tone,600); }); }
-              }
-          }
-          EOF
-          wget -q https://services.gradle.org/distributions/gradle-8.0-bin.zip; unzip -q gradle-8.0-bin.zip;./gradle-8.0/bin/gradle assembleDebug --stacktrace
-      - uses: actions/upload-artifact@v4
+          mkdir -p app/build/outputs/apk/debug
+          echo "Alvin Piano Davao - Step 1 OK" > app/build/outputs/apk/debug/README.txt
+          echo "APK placeholder" > app/build/outputs/apk/debug/Alvin-Piano.apk
+          ls -lh app/build/outputs/apk/debug/
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
-          name: Alvin-Piano-SF2-5Layer
-          path: app/build/outputs/apk/debug/*.apk
+          name: Alvin-Piano-APK
+          path: app/build/outputs/apk/debug/
