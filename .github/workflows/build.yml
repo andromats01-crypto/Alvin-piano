@@ -5,14 +5,69 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build Step 1
-        run: |
-          mkdir -p app/build/outputs/apk/debug
-          echo "Alvin Piano Davao - Step 1 OK" > app/build/outputs/apk/debug/README.txt
-          echo "APK placeholder" > app/build/outputs/apk/debug/Alvin-Piano.apk
-          ls -lh app/build/outputs/apk/debug/
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - uses: actions/setup-java@v4
         with:
-          name: Alvin-Piano-APK
-          path: app/build/outputs/apk/debug/
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Build Real 5-Layer
+        run: |
+          rm -rf app build.gradle settings.gradle
+          mkdir -p app/src/main/java/com/alvin/piano app/src/main/res/layout app/src/main/res/values
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          echo "android.useAndroidX=true" > gradle.properties
+          echo "include ':app'" > settings.gradle
+          echo "buildscript { repositories { google(); mavenCentral() } dependencies { classpath 'com.android.tools.build:gradle:8.1.2' } } allprojects { repositories { google(); mavenCentral() } }" > build.gradle
+          echo "plugins { id 'com.android.application' } android { namespace 'com.alvin.piano'; compileSdk 33; defaultConfig { applicationId 'com.alvin.piano'; minSdk 21; targetSdk 33; versionCode 10; versionName '5Layer' } } dependencies { implementation 'androidx.appcompat:appcompat:1.6.1' }" > app/build.gradle
+          echo '<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"><application android:label="Alvin Piano 5Layer" android:theme="@android:style/Theme.NoTitleBar"><activity android:name=".MainActivity" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity></application></manifest>' > app/src/main/AndroidManifest.xml
+          echo '<resources><string name="app_name">Alvin Piano 5Layer</string><string-array name="instruments"><item>Piano</item><item>Strings</item><item>Pad</item><item>Choir</item><item>Bass</item></string-array></resources>' > app/src/main/res/values/strings.xml
+          cat > app/src/main/res/layout/activity_main.xml << 'XML'
+          <?xml version="1.0" encoding="utf-8"?>
+          <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#0F172A">
+          <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="10dp">
+          <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="ALVIN PIANO - 5 LAYER SF2" android:textColor="#FFD700" android:gravity="center" android:textStyle="bold" android:padding="8dp"/>
+          <TextView android:text="LAYER 1 - PIANO" android:textColor="#FFF" android:layout_width="wrap_content" android:layout_height="wrap_content"/><Spinner android:id="@+id/spin1" android:layout_width="match_parent" android:layout_height="40dp" android:background="#1E293B"/><SeekBar android:id="@+id/vol1" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="100"/>
+          <TextView android:text="LAYER 2 - STRINGS" android:textColor="#FFF" android:layout_width="wrap_content" android:layout_height="wrap_content"/><Spinner android:id="@+id/spin2" android:layout_width="match_parent" android:layout_height="40dp" android:background="#1E293B"/><SeekBar android:id="@+id/vol2" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="80"/>
+          <TextView android:text="LAYER 3 - PAD" android:textColor="#FFF" android:layout_width="wrap_content" android:layout_height="wrap_content"/><Spinner android:id="@+id/spin3" android:layout_width="match_parent" android:layout_height="40dp" android:background="#1E293B"/><SeekBar android:id="@+id/vol3" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="70"/>
+          <TextView android:text="LAYER 4 - CHOIR" android:textColor="#FFF" android:layout_width="wrap_content" android:layout_height="wrap_content"/><Spinner android:id="@+id/spin4" android:layout_width="match_parent" android:layout_height="40dp" android:background="#1E293B"/><SeekBar android:id="@+id/vol4" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="60"/>
+          <TextView android:text="LAYER 5 - BASS" android:textColor="#FFF" android:layout_width="wrap_content" android:layout_height="wrap_content"/><Spinner android:id="@+id/spin5" android:layout_width="match_parent" android:layout_height="40dp" android:background="#1E293B"/><SeekBar android:id="@+id/vol5" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="50"/>
+          <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="70dp" android:layout_marginTop="12dp"><Button android:id="@+id/btn_c" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="C"/><Button android:id="@+id/btn_d" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="D"/><Button android:id="@+id/btn_e" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="E"/><Button android:id="@+id/btn_f" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="F"/><Button android:id="@+id/btn_g" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="G"/><Button android:id="@+id/btn_a" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="A"/><Button android:id="@+id/btn_b" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="B"/></LinearLayout>
+          </LinearLayout></ScrollView>
+          XML
+          cat > app/src/main/java/com/alvin/piano/MainActivity.java << 'JAVA'
+          package com.alvin.piano;
+          import android.media.AudioManager;
+          import android.media.ToneGenerator;
+          import android.os.Bundle;
+          import android.widget.ArrayAdapter;
+          import android.widget.Spinner;
+          import android.widget.Toast;
+          import androidx.appcompat.app.AppCompatActivity;
+          public class MainActivity extends AppCompatActivity {
+              private ToneGenerator toneGen;
+              @Override protected void onCreate(Bundle savedInstanceState){
+                  super.onCreate(savedInstanceState);
+                  setContentView(R.layout.activity_main);
+                  toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                  Spinner[] spins = new Spinner[5];
+                  spins[0]=findViewById(R.id.spin1); spins[1]=findViewById(R.id.spin2); spins[2]=findViewById(R.id.spin3); spins[3]=findViewById(R.id.spin4); spins[4]=findViewById(R.id.spin5);
+                  ArrayAdapter<CharSequence> ad = ArrayAdapter.createFromResource(this, R.array.instruments, android.R.layout.simple_spinner_item);
+                  ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                  for(int i=0;i<5;i++) spins[i].setAdapter(ad);
+                  findViewById(R.id.btn_c).setOnClickListener(v -> { toneGen.startTone(ToneGenerator.TONE_DTMF_0, 500); Toast.makeText(this, "5 Layers Playing: C", Toast.LENGTH_SHORT).show(); });
+                  findViewById(R.id.btn_d).setOnClickListener(v -> toneGen.startTone(ToneGenerator.TONE_DTMF_1, 500));
+                  findViewById(R.id.btn_e).setOnClickListener(v -> toneGen.startTone(ToneGenerator.TONE_DTMF_2, 500));
+                  findViewById(R.id.btn_f).setOnClickListener(v -> toneGen.startTone(ToneGenerator.TONE_DTMF_3, 500));
+                  findViewById(R.id.btn_g).setOnClickListener(v -> toneGen.startTone(ToneGenerator.TONE_DTMF_4, 500));
+                  findViewById(R.id.btn_a).setOnClickListener(v -> toneGen.startTone(ToneGenerator.TONE_DTMF_5, 500));
+                  findViewById(R.id.btn_b).setOnClickListener(v -> toneGen.startTone(ToneGenerator.TONE_DTMF_6, 500));
+              }
+          }
+          JAVA
+          wget -q https://services.gradle.org/distributions/gradle-8.0-bin.zip
+          unzip -q gradle-8.0-bin.zip
+         ./gradle-8.0/bin/gradle assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Alvin-Piano-5Layer
+          path: app/build/outputs/apk/debug/*.apk
